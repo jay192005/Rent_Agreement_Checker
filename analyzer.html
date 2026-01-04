@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyze Your Lease - ClearTenant</title>
+    <link rel="stylesheet" href="analyzer.css">
+</head>
+<body>
+    <div class="analyzer-container">
+        <header class="analyzer-header">
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </header>
+
+        <main id="analyzer-form-section">
+            <div class="form-header">
+                <h2>Submit Your Lease Agreement</h2>
+                <p>Upload a document or paste your lease text. Our AI will analyze it for fairness and provide a danger rating.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="state-location">State/Location (Optional)</label>
+                <select id="state-location">
+                    <option value="">Select your state...</option>
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+            </div>
+
+            <div class="input-toggle">
+                <button id="upload-tab" class="toggle-btn active">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                    Upload Document
+                </button>
+                <button id="paste-tab" class="toggle-btn">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h4l3 3 3-3h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V6h10v2z"/></svg>
+                    Paste Text
+                </button>
+            </div>
+
+            <!-- Upload View -->
+            <div id="upload-view">
+                <div id="drop-zone" class="drop-zone">
+                    <div class="drop-zone-prompt">
+                        <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                        <p><strong>Drag & drop your lease document here</strong></p>
+                        <p class="small-text">or click to browse your files</p>
+                    </div>
+                </div>
+                <input type="file" id="file-upload" class="hidden">
+                <button id="choose-file-btn" class="btn btn-secondary">Choose File</button>
+                <div class="supported-files">
+                    <span>PDF</span><span>TXT</span><span>DOC</span><span>DOCX</span><span>RTF</span>
+                </div>
+                <p class="small-text">Maximum file size: 10MB</p>
+            </div>
+
+            <!-- Paste Text View -->
+            <div id="paste-view" class="hidden">
+                <textarea id="paste-text-area" placeholder="Paste your lease agreement text here... (e.g., 'This lease agreement entered into on...')"></textarea>
+                <p id="char-count" class="small-text">0 characters</p>
+            </div>
+
+            <button id="analyze-btn" class="btn btn-gradient" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5zm4 4h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+                Analyze Lease & Get Danger Rating
+            </button>
+        </main>
+
+        <!-- Loading View -->
+        <div id="loading-view" class="hidden">
+            <div class="loading-spinner"></div>
+            <h3>Processing document...</h3>
+            <p>Extracting text and analyzing clauses with AI.</p>
+        </div>
+
+        <!-- Results View -->
+        <main id="results-view" class="hidden">
+            <div class="results-card result-summary-card">
+                 <div class="summary-header">
+                    <div class="summary-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
+                    </div>
+                    <div class="summary-title">
+                        <h3 id="result-rating-text">CAUTION</h3>
+                        <p id="result-rating-score">68/100</p>
+                    </div>
+                    <button id="download-report-btn" class="btn btn-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        Download Report
+                    </button>
+                </div>
+                <p id="result-short-summary">This lease has some concerns that should be reviewed before signing.</p>
+                <div class="clause-counts">
+                    <div id="red-flags-count" class="clause-count red">Red Flags: 3</div>
+                    <div id="fair-clauses-count" class="clause-count green">Fair Clauses: 2</div>
+                </div>
+            </div>
+
+            <div class="results-card">
+                <h4>Danger Level Scale</h4>
+                <div class="danger-bar-container">
+                     <div class="danger-bar-gradient"></div>
+                     <div id="danger-marker" class="danger-marker" style="left: 68%;"></div>
+                </div>
+                <div class="danger-bar-labels">
+                    <span>Critical</span><span>Danger</span><span>Caution</span><span>Safe</span><span>Perfect</span>
+                </div>
+            </div>
+            
+            <div class="results-card">
+                 <h4>AI Summary</h4>
+                 <p id="ai-summary-text">This is a standard 12-month residential lease agreement with several clauses that require careful attention. While many terms are fair and standard, there are a few areas of concern that tenants should be aware of before signing.</p>
+            </div>
+
+            <div class="results-card">
+                <div class="results-tabs">
+                    <button class="results-tab-btn active" data-tab="red-flags">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
+                        Red Flags (<span id="red-flags-tab-count">3</span>)
+                    </button>
+                    <button class="results-tab-btn" data-tab="fair-clauses">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2l-3.5-3.5a.996.996 0 1 1 1.41-1.41L9 13.38l7.09-7.09a.996.996 0 1 1 1.41 1.41L9 16.2z"/></svg>
+                        Fair Clauses (<span id="fair-clauses-tab-count">2</span>)
+                    </button>
+                    <button class="results-tab-btn" data-tab="recommendations">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5zm4 4h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+                        Recommendations
+                    </button>
+                </div>
+                <div id="red-flags" class="tab-content active">
+                    <!-- Red flag items will be populated here -->
+                </div>
+                <div id="fair-clauses" class="tab-content">
+                    <!-- Fair clause items will be populated here -->
+                </div>
+                <div id="recommendations" class="tab-content">
+                    <h4>Next Steps from AI Analysis</h4>
+                    <ol id="recommendations-list">
+                        <!-- Recommendation items will be populated here -->
+                    </ol>
+                </div>
+            </div>
+            <p class="disclaimer">This analysis was generated by AI and is for educational purposes only. While we strive for accuracy, AI can make mistakes. Always have important legal documents reviewed by a licensed attorney in your jurisdiction.</p>
+        </main>
+    </div>
+    <script src="analyzer.js"></script>
+</body>
+</html>
+

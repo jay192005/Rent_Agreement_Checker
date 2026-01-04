@@ -1,0 +1,76 @@
+# Environment variables (contains sensitive API keys)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+env/
+.ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite3
+
+# Media files (videos, images that aren't part of the app)
+*.mp4
+*.avi
+*.mov
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.txt
+
+# MySQL
+*.sql
+*.dump
+
+# Test files
+test_*.py
+
+# Temporary files
+*.tmp
+*.temp
