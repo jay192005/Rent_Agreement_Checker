@@ -1,4 +1,4 @@
-# ClearTenant - AI-Powered Rental Agreement Analyzer
+# Lekha.ai - AI-Powered Rental Agreement Analyzer
 
 A web application that uses AI to analyze rental agreements and identify potentially problematic clauses, helping tenants understand their rights and make informed decisions.
 
@@ -34,7 +34,7 @@ A web application that uses AI to analyze rental agreements and identify potenti
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd cleartenant
+   cd lekha-ai
    ```
 
 2. **Create virtual environment**
