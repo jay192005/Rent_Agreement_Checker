@@ -1,6 +1,12 @@
-// analyzer.js - Logic for the document analysis page
+// analyzer.js - Logic for the document analysis page (Updated for Vercel Deployment)
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Dynamic API Configuration ---
+    // Detects if the app is running locally or on Vercel
+    const API_BASE_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+        ? 'http://127.0.0.1:5000'
+        : 'https://your-deployed-backend-url.com'; // REPLACE THIS with your actual backend URL
 
     // --- Element Selections ---
     const getStartedNavBtn = document.getElementById('getStartedNavBtn');
@@ -73,10 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkAuthentication() {
         const userEmail = localStorage.getItem('userEmail');
         if (!userEmail) {
-            // If user is not logged in, they can't be here. Redirect them.
             window.location.href = 'index.html';
         }
-        // This page doesn't have the nav bar, so no need to update it.
     }
     
     /**
@@ -96,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleFileSelect(file) {
         if (!file) return;
         selectedFile = file;
-        pasteContent = ''; // Clear paste content if a file is selected
+        pasteContent = ''; 
         if (dropZone) {
             const prompt = dropZone.querySelector('.drop-zone-prompt');
             prompt.innerHTML = `<p><strong>File Selected:</strong> ${file.name}</p>`;
@@ -113,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
         formSection.classList.add('hidden');
         loadingView.classList.remove('hidden');
 
-        // Create a FormData object to send to the backend
         const formData = new FormData();
         if (selectedFile) {
             formData.append('file', selectedFile);
@@ -123,8 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('state', stateLocation.value);
 
         try {
-            // Make the API call to your Flask backend
-            const response = await fetch('http://127.0.0.1:5000/api/analyze', {
+            // UPDATED: Now uses the dynamic API_BASE_URL
+            const response = await fetch(`${API_BASE_URL}/api/analyze`, {
                 method: 'POST',
                 body: formData,
             });
@@ -139,8 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Analysis Error:', error);
-            // In case of an error, hide loading and show the form again
-            // You might want to add a proper error message to the user
             loadingView.classList.add('hidden');
             formSection.classList.remove('hidden');
             alert(`An error occurred: ${error.message}`);
@@ -151,24 +152,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * Populates the results view with data from the analysis.
      */
     function displayResults(data) {
-        // Update summary card
         resultRatingText.textContent = data.ratingText;
         resultRatingScore.textContent = `${data.ratingScore}/100`;
         resultShortSummary.textContent = data.shortSummary;
         redFlagsCount.textContent = `Red Flags: ${data.redFlagsCount}`;
         fairClausesCount.textContent = `Fair Clauses: ${data.fairClausesCount}`;
         
-        // Update danger scale
         dangerMarker.style.left = `${data.ratingScore}%`;
-
-        // Update AI Summary
         aiSummaryText.textContent = data.aiSummary;
 
-        // Update tab counts
         redFlagsTabCount.textContent = data.redFlagsCount;
         fairClausesTabCount.textContent = data.fairClausesCount;
 
-        // Populate Red Flags
         redFlagsContent.innerHTML = '';
         data.redFlags.forEach(item => {
             const clauseEl = document.createElement('div');
@@ -182,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
             redFlagsContent.appendChild(clauseEl);
         });
 
-        // Populate Fair Clauses
         fairClausesContent.innerHTML = '';
         data.fairClauses.forEach(item => {
             const clauseEl = document.createElement('div');
@@ -194,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
             fairClausesContent.appendChild(clauseEl);
         });
 
-        // Populate Recommendations
         recommendationsList.innerHTML = '';
         data.recommendations.forEach(item => {
             const li = document.createElement('li');
@@ -202,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
             recommendationsList.appendChild(li);
         });
 
-        // Show results
         loadingView.classList.add('hidden');
         resultsView.classList.remove('hidden');
     }
@@ -210,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
     
-    // Tab switching for Upload/Paste
     uploadTab.addEventListener('click', () => {
         uploadTab.classList.add('active');
         pasteTab.classList.remove('active');
@@ -225,7 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadView.classList.add('hidden');
     });
 
-    // File Upload Listeners
     if (dropZone) {
         dropZone.addEventListener('click', () => fileUpload.click());
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -246,11 +236,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (chooseFileBtn) chooseFileBtn.addEventListener('click', () => fileUpload.click());
     if (fileUpload) fileUpload.addEventListener('change', e => handleFileSelect(e.target.files[0]));
 
-    // Paste Text Listener
     if (pasteTextArea) {
         pasteTextArea.addEventListener('input', () => {
             pasteContent = pasteTextArea.value;
-            selectedFile = null; // Clear file selection if user types
+            selectedFile = null; 
             const prompt = dropZone.querySelector('.drop-zone-prompt');
             prompt.innerHTML = `<p><strong>Drag & drop your lease document here</strong></p><p class="small-text">or click to browse your files</p>`;
             charCount.textContent = `${pasteContent.length} characters`;
@@ -258,10 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Analyze Button Listener
     analyzeBtn.addEventListener('click', handleAnalysis);
 
-    // Results Tab Listeners
     resultsTabs.forEach(tab => {
         tab.addEventListener('click', () => {
             resultsTabs.forEach(t => t.classList.remove('active'));
@@ -272,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Initial Page Load ---
     checkAuthentication();
     populateIndianStates();
 });
