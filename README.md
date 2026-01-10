@@ -1,4 +1,5 @@
-# Lekha.ai - AI-Powered Rental Agreement Analyzer
+# Lekha.ai - AI-Powered Rental Agreement Analyzer(FULLYWORKING)
+
 
 A web application that uses AI to analyze rental agreements and identify potentially problematic clauses, helping tenants understand their rights and make informed decisions.
 
