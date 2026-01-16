@@ -1,0 +1,34 @@
+# Web Framework
+Flask==2.3.3
+flask-cors==4.0.0
+
+# Database
+mysql-connector-python==8.1.0
+
+# Security
+Werkzeug==2.3.7
+
+# Environment Variables
+python-dotenv==1.0.0
+
+# Document Processing
+PyPDF2==3.0.1
+python-docx==0.8.11
+
+# OCR (Optical Character Recognition)
+pdf2image==1.16.3
+pytesseract==0.3.10
+
+# AI/ML
+google-generativeai==0.3.2
+
+# Standard Library Dependencies (included for completeness)
+# os - built-in
+# json - built-in
+# re - built-in
+# traceback - built-in
+
+# System Dependencies (install separately):
+# - Tesseract OCR: https://github.com/tesseract-ocr/tesseract
+# - Poppler Utils: https://poppler.freedesktop.org/
+# - MySQL Server: https://dev.mysql.com/downloads/mysql/

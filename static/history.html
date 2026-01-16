@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Analysis History - ClearTenant</title>
+    <link rel="stylesheet" href="analyzer.css">
+    <style>
+        /* Add some specific styles for the history page */
+        .history-item {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s ease-in-out;
+        }
+        .history-item:hover {
+            transform: translateY(-5px);
+        }
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .history-item-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+        .history-item-date {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .history-item-summary p {
+            margin: 5px 0 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="analyzer-container">
+        <header class="analyzer-header">
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </header>
+
+        <main id="history-section">
+            <div class="form-header">
+                <h2>My Analysis History</h2>
+                <p>Here are the lease agreements you've analyzed in the past.</p>
+            </div>
+
+            <div id="history-list-container">
+                </div>
+
+            <div id="loading-history" class="hidden" style="text-align: center;">
+                <p>Loading history...</p>
+                <div class="loading-spinner"></div>
+            </div>
+
+            <div id="no-history" class="hidden" style="text-align: center;">
+                <p>You have not analyzed any documents yet.</p>
+                <a href="analyzer.html" class="btn btn-primary" style="margin-top: 15px;">Analyze Your First Lease</a>
+            </div>
+        </main>
+    </div>
+    <script src="history.js"></script>
+</body>
+</html>
