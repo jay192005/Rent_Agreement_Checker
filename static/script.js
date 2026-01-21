@@ -200,14 +200,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // User profile icon click (logout)
+    // User profile icon click (show login modal if not logged in, or show user menu if logged in)
     if (userProfileIcon) {
         userProfileIcon.addEventListener('click', () => {
-            if (confirm('Do you want to log out?')) {
-                localStorage.removeItem('userEmail');
-                updateLoginState();
-                // Optionally redirect to home page
-                window.location.reload();
+            const userEmail = localStorage.getItem('userEmail');
+            if (userEmail) {
+                // User is logged in, show logout option
+                if (confirm(`Logged in as: ${userEmail}\n\nDo you want to log out?`)) {
+                    localStorage.removeItem('userEmail');
+                    updateLoginState();
+                    window.location.reload();
+                }
+            } else {
+                // User is not logged in, show login modal
+                openModal();
             }
         });
     }

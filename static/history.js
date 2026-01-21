@@ -215,4 +215,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userEmail) {
         fetchAndDisplayHistory(userEmail);
     }
+    
+    // Add user profile icon functionality
+    const userProfileIcon = document.getElementById('userProfileIcon');
+    if (userProfileIcon) {
+        userProfileIcon.addEventListener('click', () => {
+            const userEmail = localStorage.getItem('userEmail');
+            if (userEmail) {
+                if (confirm(`Logged in as: ${userEmail}\n\nDo you want to log out?`)) {
+                    localStorage.removeItem('userEmail');
+                    window.location.href = 'index.html';
+                }
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    }
 });
