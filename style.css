@@ -296,6 +296,10 @@ section {
     z-index: 2000;
     backdrop-filter: blur(5px);
 }
+
+.modal-overlay.show {
+    display: flex; /* Show the modal when .show class is added */
+}
 .modal-content {
     background: white;
     padding: 40px;

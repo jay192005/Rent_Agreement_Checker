@@ -32,16 +32,37 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function updateLoginState() {
         const userEmail = localStorage.getItem('userEmail');
+        console.log('Updating login state, user email:', userEmail); // Debug log
+        
         if (userEmail) {
             // User is logged in: Show icon, hide button, show history link
-            if (getStartedNavBtn) getStartedNavBtn.classList.add('hidden');
-            if (userProfileIcon) userProfileIcon.classList.remove('hidden');
-            if (historyLinkContainer) historyLinkContainer.classList.remove('hidden');
+            if (getStartedNavBtn) {
+                getStartedNavBtn.classList.add('hidden');
+                console.log('Hiding login button'); // Debug log
+            }
+            if (userProfileIcon) {
+                userProfileIcon.classList.remove('hidden');
+                userProfileIcon.title = `Logged in as ${userEmail}. Click to logout.`;
+                console.log('Showing user icon'); // Debug log
+            }
+            if (historyLinkContainer) {
+                historyLinkContainer.classList.remove('hidden');
+                console.log('Showing history link'); // Debug log
+            }
         } else {
             // User is logged out: Hide icon, show button, hide history link
-            if (getStartedNavBtn) getStartedNavBtn.classList.remove('hidden');
-            if (userProfileIcon) userProfileIcon.classList.add('hidden');
-            if (historyLinkContainer) historyLinkContainer.classList.add('hidden');
+            if (getStartedNavBtn) {
+                getStartedNavBtn.classList.remove('hidden');
+                console.log('Showing login button'); // Debug log
+            }
+            if (userProfileIcon) {
+                userProfileIcon.classList.add('hidden');
+                console.log('Hiding user icon'); // Debug log
+            }
+            if (historyLinkContainer) {
+                historyLinkContainer.classList.add('hidden');
+                console.log('Hiding history link'); // Debug log
+            }
         }
     }
 
@@ -102,9 +123,13 @@ document.addEventListener('DOMContentLoaded', () => {
      * Opens the authentication modal.
      */
     function openModal() {
+        console.log('openModal function called'); // Debug log
         if (authModal) {
+            console.log('Modal found, showing it'); // Debug log
             authModal.classList.add('show');
             document.body.style.overflow = 'hidden';
+        } else {
+            console.log('Modal not found!'); // Debug log
         }
     }
 
@@ -202,20 +227,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // User profile icon click (show login modal if not logged in, or show user menu if logged in)
     if (userProfileIcon) {
-        userProfileIcon.addEventListener('click', () => {
+        userProfileIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('User icon clicked'); // Debug log
+            
             const userEmail = localStorage.getItem('userEmail');
+            console.log('Current user email:', userEmail); // Debug log
+            
             if (userEmail) {
                 // User is logged in, show logout option
-                if (confirm(`Logged in as: ${userEmail}\n\nDo you want to log out?`)) {
+                const confirmMessage = `Logged in as: ${userEmail}\n\nDo you want to log out?`;
+                if (confirm(confirmMessage)) {
                     localStorage.removeItem('userEmail');
                     updateLoginState();
                     window.location.reload();
                 }
             } else {
                 // User is not logged in, show login modal
+                console.log('Opening login modal'); // Debug log
                 openModal();
             }
         });
+        
+        // Add visual feedback
+        userProfileIcon.style.cursor = 'pointer';
+        userProfileIcon.title = 'Click to login or manage account';
+    } else {
+        console.log('User profile icon not found'); // Debug log
     }
 
     // --- Initial Page Load ---
