@@ -31,7 +31,9 @@ POPPLER_PATH = os.getenv("POPPLER_PATH", r'C:\Users\JAY GAVALI\Downloads\rent ag
 import ai
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5000", "http://127.0.0.1:5000"])
+CORS(app, origins=["http://localhost:5000", "http://127.0.0.1:5000", "http://192.168.1.17:5000"], 
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     allow_headers=["Content-Type", "Authorization"])
 
 # --- STATIC FILE ROUTES ---
 @app.route('/')

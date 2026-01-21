@@ -83,13 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
             
+            console.log('Submitting form to:', url); // Debug log
+            console.log('Form data:', data); // Debug log
+            
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
             
+            console.log('Response status:', response.status); // Debug log
+            
             const result = await response.json();
+            console.log('Response data:', result); // Debug log
             
             if (response.ok) {
                 messageEl.textContent = result.message;
@@ -108,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Form submission error:', error);
-            messageEl.textContent = 'Could not connect to the server. Please try again.';
+            messageEl.textContent = 'Could not connect to the server. Please check your connection and try again.';
             messageEl.className = 'form-message error';
         } finally {
             // Reset button state
