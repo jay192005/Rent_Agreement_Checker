@@ -6,6 +6,10 @@ This script creates the database and required tables.
 
 import mysql.connector
 from mysql.connector import Error
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def setup_database():
     """Create the database and tables if they don't exist."""
@@ -14,7 +18,7 @@ def setup_database():
     config = {
         'host': 'localhost',
         'user': 'root',
-        'password': 'Jay@2005'  # Update this to match your MySQL password
+        'password': os.getenv("DB_PASSWORD", 'Jay@2005')  # Update this to match your MySQL password
     }
     
     try:
