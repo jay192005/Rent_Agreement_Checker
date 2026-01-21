@@ -1,5 +1,9 @@
-# Environment variables (contains sensitive API keys)
+# Environment variables
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Python
 __pycache__/
@@ -19,6 +23,8 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -27,9 +33,11 @@ MANIFEST
 # Virtual environments
 venv/
 .venv/
-ENV/
 env/
-.ENV/
+.env/
+ENV/
+env.bak/
+venv.bak/
 
 # IDE
 .vscode/
@@ -49,28 +57,55 @@ Thumbs.db
 
 # Logs
 *.log
+logs/
 
 # Database
 *.db
+*.sqlite
 *.sqlite3
-
-# Media files (videos, images that aren't part of the app)
-*.mp4
-*.avi
-*.mov
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.txt
-
-# MySQL
-*.sql
-*.dump
-
-# Test files
-test_*.py
 
 # Temporary files
 *.tmp
 *.temp
+temp/
+tmp/
+
+# Node modules (if any)
+node_modules/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Sensitive files
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Local configuration
+config.local.py
+settings.local.py
+
+# Media files (uploads)
+uploads/
+media/
+
+# Static files (if generated)
+staticfiles/
+collected-static/
+
+# Backup files
+*.bak
+*.backup
