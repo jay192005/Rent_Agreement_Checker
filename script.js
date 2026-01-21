@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Element Selections ---
     const getStartedNavBtn = document.getElementById('getStartedNavBtn');
     const userProfileIcon = document.getElementById('userProfileIcon');
+    const historyLinkContainer = document.getElementById('historyLinkContainer');
     const authModal = document.getElementById('authModal');
     const closeBtn = document.querySelector('.close-btn');
 
@@ -32,13 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateLoginState() {
         const userEmail = localStorage.getItem('userEmail');
         if (userEmail) {
-            // User is logged in: Show icon, hide button
-            getStartedNavBtn.classList.add('hidden');
-            userProfileIcon.classList.remove('hidden');
+            // User is logged in: Show icon, hide button, show history link
+            if (getStartedNavBtn) getStartedNavBtn.classList.add('hidden');
+            if (userProfileIcon) userProfileIcon.classList.remove('hidden');
+            if (historyLinkContainer) historyLinkContainer.classList.remove('hidden');
         } else {
-            // User is logged out: Hide icon, show button
-            getStartedNavBtn.classList.remove('hidden');
-            userProfileIcon.classList.add('hidden');
+            // User is logged out: Hide icon, show button, hide history link
+            if (getStartedNavBtn) getStartedNavBtn.classList.remove('hidden');
+            if (userProfileIcon) userProfileIcon.classList.add('hidden');
+            if (historyLinkContainer) historyLinkContainer.classList.add('hidden');
         }
     }
 
@@ -47,15 +50,26 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const handleFormSubmit = async (form, url) => {
         const messageEl = form.querySelector('.form-message');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        // Show loading state
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+        }
+        
         try {
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
+            
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
+            
             const result = await response.json();
+            
             if (response.ok) {
                 messageEl.textContent = result.message;
                 messageEl.className = 'form-message success';
@@ -72,89 +86,132 @@ document.addEventListener('DOMContentLoaded', () => {
                 messageEl.className = 'form-message error';
             }
         } catch (error) {
-            messageEl.textContent = 'Could not connect to the server.';
+            console.error('Form submission error:', error);
+            messageEl.textContent = 'Could not connect to the server. Please try again.';
             messageEl.className = 'form-message error';
+        } finally {
+            // Reset button state
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = form.id === 'loginForm' ? 'Login' : 'Create Account';
+            }
         }
     };
 
     /**
-     * Logs the user out.
+     * Opens the authentication modal.
      */
-    function logout() {
-        localStorage.removeItem('userEmail');
-        updateLoginState();
+    function openModal() {
+        if (authModal) {
+            authModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
     }
 
     /**
-     * Navigates to the analyzer page or opens the login modal if the user is not authenticated.
+     * Closes the authentication modal.
      */
-    function goToAnalyzer() {
+    function closeModal() {
+        if (authModal) {
+            authModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+            
+            // Clear any messages
+            const messages = authModal.querySelectorAll('.form-message');
+            messages.forEach(msg => {
+                msg.textContent = '';
+                msg.className = 'form-message';
+            });
+        }
+    }
+
+    /**
+     * Navigates to the analyzer page if user is logged in, otherwise opens login modal.
+     */
+    function navigateToAnalyzer() {
         const userEmail = localStorage.getItem('userEmail');
         if (userEmail) {
-            // If logged in, navigate to the new analyzer page
             window.location.href = 'analyzer.html';
         } else {
-            // If not logged in, open the login modal to prompt them
             openModal();
         }
     }
 
-    // --- Modal Logic ---
-    const openModal = () => { authModal.style.display = 'flex'; };
-    const closeModal = () => { authModal.style.display = 'none'; };
-
     // --- Event Listeners ---
+
+    // Open modal buttons
     openModalBtns.forEach(btn => {
-        if(btn) btn.addEventListener('click', openModal);
+        if (btn) {
+            btn.addEventListener('click', openModal);
+        }
     });
 
-    if(closeBtn) closeBtn.addEventListener('click', closeModal);
-    
-    window.addEventListener('click', (e) => {
-        if (e.target === authModal) closeModal();
-    });
+    // Navigate to analyzer buttons
+    if (analyzeLeaseBtn) {
+        analyzeLeaseBtn.addEventListener('click', navigateToAnalyzer);
+    }
+    if (startFreeAnalysisBtn) {
+        startFreeAnalysisBtn.addEventListener('click', navigateToAnalyzer);
+    }
 
-    // Event listeners for the main "Analyze" buttons
-    if(analyzeLeaseBtn) analyzeLeaseBtn.addEventListener('click', goToAnalyzer);
-    if(startFreeAnalysisBtn) startFreeAnalysisBtn.addEventListener('click', goToAnalyzer);
+    // Close modal
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
 
-    // Event listeners for switching between login/signup forms
-    if(showSignup) {
+    // Close modal when clicking outside
+    if (authModal) {
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                closeModal();
+            }
+        });
+    }
+
+    // Form toggle buttons
+    if (showSignup) {
         showSignup.addEventListener('click', (e) => {
             e.preventDefault();
-            loginForm.style.display = 'none';
-            signupForm.style.display = 'block';
+            if (loginForm) loginForm.style.display = 'none';
+            if (signupForm) signupForm.style.display = 'block';
         });
     }
 
-    if(showLogin) {
+    if (showLogin) {
         showLogin.addEventListener('click', (e) => {
             e.preventDefault();
-            signupForm.style.display = 'none';
-            loginForm.style.display = 'block';
+            if (signupForm) signupForm.style.display = 'none';
+            if (loginForm) loginForm.style.display = 'block';
         });
     }
 
-    // Event listeners for form submissions
-    if(signupForm) {
+    // Form submissions
+    if (signupForm) {
         signupForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            handleFormSubmit(signupForm, 'http://localhost:5000/api/register');
+            handleFormSubmit(signupForm, '/api/register');
         });
     }
 
-    if(loginForm) {
+    if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            handleFormSubmit(loginForm, 'http://localhost:5000/api/login');
+            handleFormSubmit(loginForm, '/api/login');
         });
     }
 
-    // Event listener for logout
-    if(userProfileIcon) userProfileIcon.addEventListener('click', logout);
+    // User profile icon click (logout)
+    if (userProfileIcon) {
+        userProfileIcon.addEventListener('click', () => {
+            if (confirm('Do you want to log out?')) {
+                localStorage.removeItem('userEmail');
+                updateLoginState();
+                // Optionally redirect to home page
+                window.location.reload();
+            }
+        });
+    }
 
     // --- Initial Page Load ---
-    // Set the correct UI state as soon as the page loads
     updateLoginState();
 });
-
